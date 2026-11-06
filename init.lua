@@ -1,7 +1,6 @@
 --[[
 
 =====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
 ========         .----------------------.   | === |          ========
@@ -20,18 +19,6 @@
 =====================================================================
 =====================================================================
 
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
     If you don't know anything about Lua, I recommend taking some time to read through
     a guide. One possible example which will only take 10-15 minutes:
       - https://learnxinyminutes.com/docs/lua/
@@ -41,34 +28,14 @@ What is Kickstart?
     - :help lua-guide
     - (or HTML version): https://neovim.io/doc/user/lua-guide.html
 
-Kickstart Guide:
 
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
+ Next, run AND READ `:help`.
     This will open up a help window with some basic information
     about reading, navigating and searching the builtin help documentation.
 
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
 
     MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
     which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
 
    NOTE: Look for lines like this
 
@@ -78,10 +45,6 @@ Kickstart Guide:
 
 If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
 
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
 -- ============================================================
@@ -99,7 +62,7 @@ do
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -112,7 +75,7 @@ do
   --  Experiment for yourself to see if you like it!
   -- vim.o.relativenumber = true
 
-  -- Enable mouse mode, can be useful for resizing splits for example!
+  -- Enable mouse mode
   vim.o.mouse = 'a'
 
   -- Don't show the mode, since it's already in the status line
@@ -258,27 +221,6 @@ end
 -- vim.pack intro, build hooks
 -- ============================================================
 do
-  -- [[ Intro to `vim.pack` ]]
-  -- `vim.pack` is a new plugin manager built into Neovim,
-  --  which provides a Lua interface for installing and managing plugins.
-  --
-  --  See `:help vim.pack`, `:help vim.pack-examples` or the
-  --  excellent blog post from the creator of vim.pack and mini.nvim:
-  --  https://echasnovski.com/blog/2026-03-13-a-guide-to-vim-pack
-  --
-  --  To inspect plugin state and pending updates, run
-  --    :lua vim.pack.update(nil, { offline = true })
-  --
-  --  To update plugins, run
-  --    :lua vim.pack.update()
-  --
-  --
-  --  Throughout the rest of the config there will be examples
-  --  of how to install and configure plugins using `vim.pack`.
-  --
-  --  In this section we set up some autocommands to run build
-  --  steps for certain plugins after they are installed or updated.
-
   local function run_build(name, cmd, cwd)
     local result = vim.system(cmd, { cwd = cwd }):wait()
     if result.code ~= 0 then
@@ -330,12 +272,6 @@ local function gh(repo) return 'https://github.com/' .. repo end
 -- guess-indent, gitsigns, which-key, colorscheme, todo-comments, mini modules
 -- ============================================================
 do
-  -- [[ Installing and Configuring Plugins ]]
-  --
-  -- To install a plugin simply call `vim.pack.add` with its git url.
-  -- This will download the default branch of the plugin, which will usually be `main` or `master`
-  -- You can also have more advanced specs, which we will talk about later.
-  --
   -- For most plugins its not enough to install them, you also need to call their `.setup()` to start them.
   --
   -- For example, lets say we want to install `guess-indent.nvim` - a plugin for
@@ -497,29 +433,7 @@ end
 do
   -- [[ Fuzzy Finder (files, lsp, etc) ]]
   --
-  -- Telescope is a fuzzy finder that comes with a lot of different things that
-  -- it can fuzzy find! It's more than just a "file finder", it can search
-  -- many different aspects of Neovim, your workspace, LSP, and more!
-  --
-  -- There are lots of other alternative pickers (like snacks.picker, or fzf-lua)
-  -- so feel free to experiment and see what you like!
-  --
-  -- The easiest way to use Telescope, is to start by doing something like:
-  --  :Telescope help_tags
-  --
-  -- After running this command, a window will open up and you're able to
-  -- type in the prompt window. You'll see a list of `help_tags` options and
-  -- a corresponding preview of the help.
-  --
-  -- Two important keymaps to use while in Telescope are:
-  --  - Insert mode: <c-/>
-  --  - Normal mode: ?
-  --
-  -- This opens a window that shows you all of the keymaps for the current
-  -- Telescope picker. This is really useful to discover what Telescope can
-  -- do as well as how to actually do it!
-
-  ---@type (string | vim.pack.Spec)[]
+    ---@type (string | vim.pack.Spec)[]
   local telescope_plugins = {
     gh 'nvim-lua/plenary.nvim',
     gh 'nvim-telescope/telescope.nvim',
@@ -630,32 +544,6 @@ end
 -- LSP keymaps, server configuration, Mason tools installations
 -- ============================================================
 do
-  -- [[ LSP Configuration ]]
-  -- Brief aside: **What is LSP?**
-  --
-  -- LSP is an initialism you've probably heard, but might not understand what it is.
-  --
-  -- LSP stands for Language Server Protocol. It's a protocol that helps editors
-  -- and language tooling communicate in a standardized fashion.
-  --
-  -- In general, you have a "server" which is some tool built to understand a particular
-  -- language (such as `gopls`, `lua_ls`, `rust_analyzer`, etc.). These Language Servers
-  -- (sometimes called LSP servers, but that's kind of like ATM Machine) are standalone
-  -- processes that communicate with some "client" - in this case, Neovim!
-  --
-  -- LSP provides Neovim with features like:
-  --  - Go to definition
-  --  - Find references
-  --  - Autocompletion
-  --  - Symbol Search
-  --  - and more!
-  --
-  -- Thus, Language Servers are external tools that must be installed separately from
-  -- Neovim. This is where `mason` and related plugins come into play.
-  --
-  -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
-  -- and elegantly composed help section, `:help lsp-vs-treesitter`
-
   -- Useful status updates for LSP.
   vim.pack.add { gh 'j-hui/fidget.nvim' }
   require('fidget').setup {}
@@ -786,6 +674,11 @@ do
     gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
   }
 
+  vim.pack.add {{
+    src = 'https://github.com/mrcjkb/rustaceanvim',
+    version = vim.version.range('^9')
+  }}
+
   -- Automatically install LSPs and related tools to stdpath for Neovim
   require('mason').setup {}
 
@@ -812,6 +705,13 @@ do
     vim.lsp.config(name, server)
     vim.lsp.enable(name)
   end
+
+  vim.pack.add {{
+    src = 'https://github.com/mrcjkb/rustaceanvim',
+    version = vim.version.range('^9')
+  }}
+
+
 end
 
 -- ============================================================
@@ -1005,20 +905,11 @@ end
 -- kickstart.plugins.* examples
 -- ============================================================
 do
-  -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- require 'kickstart.plugins.debug'
-  -- require 'kickstart.plugins.indent_line'
-  -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
-  -- require 'kickstart.plugins.neo-tree'
+   require 'kickstart.plugins.debug'
+   require 'kickstart.plugins.indent_line'
+   require 'kickstart.plugins.lint'
+   require 'kickstart.plugins.autopairs'
+   require 'kickstart.plugins.neo-tree'
 
   -- NOTE: You can add your own plugins, configuration, etc. in `lua/custom/plugins/*.lua`.
   --
